@@ -1,0 +1,52 @@
+﻿@model PhotoAlbum.Web.Models.AlbumViewModel
+@{
+    ViewBag.Title = "Tags";
+}
+
+@Html.Partial("_ImageNav", Model)
+
+<div class="container post">
+    <div class="row">
+        <div class="col-md-6 post-title">
+            <h1>Image Tags</h1>
+            <p class="author"><strong>O'Reilly training</strong><span class="text-muted">Microsoft Cognitive Services</span></p>
+        </div>
+        <div class="col-md-6 col-md-offset-0 post-body">
+            <p>These tags were extracted by Microsoft Cognitive Services while evaluating your uploaded images. Click on a tag to find associated images.</p>
+            <figure></figure>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.SelectedTag))
+{
+    <div class="col-md-4 col-md-offset-8 alert alert-info">
+        <p>Selected tag: <strong>@Model.SelectedTag</strong></p>
+    </div>
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var tag in Model.Tags)
+        {
+            <span class="label label-primary">
+                <a href="@Url.Action("Tags", "Home", new { tag })">@tag</a>
+            </span>
+            <text>&nbsp;</text>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.SelectedTag))
+{
+    @Html.Partial("_Images", Model)
+}
+else
+{
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="alert alert-info">
+            <strong>No tag selected!</strong> Click on a tag from the list above to begin.
+        </div>
+    </div>
+}

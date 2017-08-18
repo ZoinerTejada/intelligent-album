@@ -1,0 +1,39 @@
+{
+    "name": "OutputDataset",
+    "properties": {
+        "structure": [
+            {
+                "name": "Id",
+                "type": "String"
+            },
+            {
+                "name": "ImageName",
+                "type": "String"
+            },
+          {
+            "name": "Description",
+            "type": "String"
+          },
+            {
+                "name": "People",
+                "type": "String"
+            },
+            {
+                "name": "Tags",
+                "type": "String"
+            }
+        ],
+        "published": false,
+        "type": "AzureSqlTable",
+        "linkedServiceName": "Destination-SQLAzure",
+        "typeProperties": {
+            "tableName": "Image"
+        },
+        "availability": {
+            "frequency": "Minute",
+            "interval": 15
+        },
+        "external": false,
+        "policy": {}
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "name": "Source-DataLakeStore",
+    "properties": {
+        "type": "AzureDataLakeStore",
+      "typeProperties": {
+        "dataLakeStoreUri": "https://<YOUR_DATA_LAKE_STORE>.azuredatalakestore.net/webhdfs/v1",
+        "servicePrincipalId": "",
+        "tenant": "",
+        "authorization": "**********",
+        "sessionId": "**********"
+      }
+    }
+}

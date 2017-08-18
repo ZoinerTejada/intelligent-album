@@ -1,0 +1,7 @@
+﻿@model PhotoAlbum.Web.Models.INavViewModel
+@{ ViewHelper.PopulateNavData(Model, ViewContext); }
+<ul class="nav nav-pills categories">
+    <li class="@(Model.CurrentPage == "home-index" ? "active" : "")"><a href="@Url.Action("Index", "Home")">latest photos </a></li>
+    <li class="@(Model.CurrentPage == "home-tags" ? "active" : "")"><a href="@Url.Action("Tags", "Home")">tags </a></li>
+    <li class="@(Model.CurrentPage == "home-friends" ? "active" : "")"><a href="@Url.Action("Friends", "Home")">friends </a></li>
+</ul>

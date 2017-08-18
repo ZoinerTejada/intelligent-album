@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>3e60dd0e-2fcb-472c-be67-342c2c9114b5</ProjectGuid>
+    <OutputType>File</OutputType>
+    <AssemblyName>Algebra.xml</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <Name>PhotoAlbumActivity</Name>
+    <RootNamespace>PhotoAlbumActivity</RootNamespace>
+    <RuntimeVersion>default</RuntimeVersion>
+    <OutputStreamPath>C:\Users\ZoinerTejada\AppData\Local\USQLDataRoot</OutputStreamPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Script Include="CreateTables.usql" />
+    <Script Include="ProcessImageData.usql" />
+    <Script Include="QueryTables.usql" />
+    <Script Include="RegisterAsm.usql" />
+    <ScriptCode Include="CreateTables.usql.cs">
+      <DependentUpon>CreateTables.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="ProcessImageData.usql.cs">
+      <DependentUpon>ProcessImageData.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="QueryTables.usql.cs">
+      <DependentUpon>QueryTables.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="RegisterAsm.usql.cs">
+      <DependentUpon>RegisterAsm.usql</DependentUpon>
+    </ScriptCode>
+  </ItemGroup>
+  <Import Project="$(AppData)\Microsoft\DataLake\MsBuild\1.0\Usql.targets" />
+</Project>

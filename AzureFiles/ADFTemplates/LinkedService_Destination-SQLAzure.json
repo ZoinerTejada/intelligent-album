@@ -1,0 +1,9 @@
+{
+    "name": "Destination-SQLAzure",
+    "properties": {
+        "type": "AzureSqlDatabase",
+      "typeProperties": {
+        "connectionString": "<YOUR_SQL_CONNECTION_STRING>"
+      }
+    }
+}

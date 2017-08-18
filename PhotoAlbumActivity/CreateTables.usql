@@ -1,0 +1,31 @@
+﻿// First, create the ADLA database:
+CREATE DATABASE IF NOT EXISTS PhotoAlbum;
+
+// Create the tables
+USE DATABASE PhotoAlbum;
+  
+CREATE TABLE IF NOT EXISTS Image
+(
+    Id Guid,
+    ImageName string,
+    Description string,
+    INDEX idx_Images CLUSTERED (Id)
+    DISTRIBUTED BY HASH (Id)
+);
+
+CREATE TABLE IF NOT EXISTS ImagePerson
+(
+    ImageId Guid,
+    PersonId Guid,
+    Name string,
+    INDEX idx_ImagePeople CLUSTERED (ImageId, PersonId)
+    DISTRIBUTED BY HASH (ImageId, PersonId)
+);
+
+CREATE TABLE IF NOT EXISTS ImageTag
+(
+    ImageId Guid,
+    Tag string,
+    INDEX idx_ImageTags CLUSTERED (ImageId, Tag)
+    DISTRIBUTED BY HASH (ImageId, Tag)
+);

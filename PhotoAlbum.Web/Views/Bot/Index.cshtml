@@ -1,0 +1,45 @@
+﻿@model PhotoAlbum.Web.Models.AlbumViewModel
+@{
+    ViewBag.Title = "Bot";
+}
+
+<div class="container post">
+    <div class="row">
+        <div class="col-md-6 post-title">
+            <h1>Bot <i class="glyphicon glyphicon-sunglasses" aria-hidden="true"></i></h1>
+            <p class="author"><strong>O'Reilly training</strong><span class="text-muted">Microsoft Cognitive Services</span></p>
+        </div>
+        <div class="col-md-6 col-md-offset-0 post-body">
+            <p>Hello. I'm here to help you find pictures of your friends or interesting tags we've come up with.</p>
+            <p>Begin by typing a message, and I'll get right back to you. I'll start out by giving you a list of options. Just type in the corresponding number to begin searching on that option. It's that simple!</p>
+            <figure></figure>
+        </div>
+    </div>
+</div>
+
+<div class="container post-body">
+    <div class="row">
+        <div class="col-md-6">
+            <h1 style="margin-top: 0;"><small>Need names or tags?</small></h1>
+            <p>Here are some friends' names you can try and find:</p>
+            @for (var i = 0; i < Model.Names.Count; i++)
+            {
+                <span class="post-color-@(i % 11)">
+                    @Model.Names[i] &nbsp;
+                </span>
+                
+            }
+            <p>&nbsp;</p>
+            <p>If you need some tags to type in, try these:</p>
+            @for (var i = 0; i < Model.Tags.Count; i++)
+            {
+                <span class="post-color-@(i % 11)">
+                    @Model.Tags[i] &nbsp;
+                </span>
+            }
+        </div>
+        <div class="col-md-6 col-md-offset-0">
+            <iframe style="height: 480px; width: 100%" src='https://webchat.botframework.com/embed/intelligentphotobot?s=vbCnRbBEfDM.cwA.RNA.qjQ3Xo0xeZcbZgnXLL6HozJasu9ddN6x-Or7UT_5Yt0'></iframe>
+        </div>
+    </div>
+</div>

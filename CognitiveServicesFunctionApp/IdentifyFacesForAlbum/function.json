@@ -1,0 +1,14 @@
+﻿{
+  "scriptFile": "..\\bin\\CognitiveServicesFunctionApp.dll",
+  "entryPoint": "CognitiveServicesFunctionApp.IdentifyFacesForAlbum.Run",
+  "disabled": false,
+  "bindings": [
+    {
+      "path": "uploads/{filename}.jpg",
+      "type": "blobTrigger",
+      "name": "image",
+      "direction": "in",
+      "connection": "UploadBlobStorage"
+    }
+  ]
+}

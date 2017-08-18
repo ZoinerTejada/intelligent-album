@@ -1,0 +1,173 @@
+﻿USE DATABASE PhotoAlbum;
+
+DROP PROCEDURE IF EXISTS ProcessImageData;
+
+CREATE PROCEDURE IF NOT EXISTS ProcessImageData(@in string = null)
+AS
+BEGIN;
+
+    REFERENCE ASSEMBLY JSON;
+    REFERENCE ASSEMBLY Formats;
+
+    // Declaring an external parameter allows us to test locally, but is populated by ADF when script is executed.
+    //DECLARE EXTERNAL @in string = @"/PhotoData/";
+    DECLARE @path string = @in == null? @"/PhotoData/" : @in;
+    DECLARE @input_file string = @path + "{*}.json";
+
+    // Extract the image properties from the Json file as a string.
+    @image =
+        EXTRACT Id Guid,
+                ImageName string,
+                Description string
+        FROM @input_file
+        USING new Microsoft.Analytics.Samples.Formats.Json.JsonExtractor();
+
+    // Extract the image people property from the Json file as a string.
+    @people =
+        EXTRACT People string
+        FROM @input_file
+        USING new Microsoft.Analytics.Samples.Formats.Json.JsonExtractor();
+
+    @people =
+        SELECT People.Replace("\r\n", "") AS People
+        FROM @people;
+
+    /*
+    Parse the people property to extract the ImageId, PersonId, and Name values as a SQL.MAP
+    */
+    @people_json =
+        SELECT Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(People, "$..ImageId") AS people_imageid_map,
+               Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(People, "$..PersonId") AS people_personid_map,
+               Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(People, "$..Name") AS people_name_map
+        FROM @people;
+
+    // Extract the image tags property from the Json file as a string.
+    @tags =
+        EXTRACT Tags string
+        FROM @input_file
+        USING new Microsoft.Analytics.Samples.Formats.Json.JsonExtractor();
+
+    @tags =
+        SELECT Tags.Replace("\r\n", "") AS Tags
+        FROM @tags;
+
+    /*
+    Parse the tags property to extract the ImageId, and Tag values as a SQL.MAP
+    */
+    @tags_json =
+        SELECT Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(Tags, "$..ImageId") AS tags_imageid_map,
+               Microsoft.Analytics.Samples.Formats.Json.JsonFunctions.JsonTuple(Tags, "$..Tag") AS tags_tag_map
+        FROM @tags;
+
+    /*
+    Explode the ImageId, PersonId, and Name maps to get the values as individual rowsets
+    */
+    @people_imageid_property =
+        SELECT ImageId_name.Split('.') [0]AS ImageId_name,
+               ImageId_value
+        FROM @people_json
+             CROSS APPLY
+                 EXPLODE(people_imageid_map) AS T(ImageId_name, ImageId_value);
+    @people_personid_property =
+        SELECT PersonId_name.Split('.') [0]AS PersonId_name,
+               PersonId_value
+        FROM @people_json
+             CROSS APPLY
+                 EXPLODE(people_personid_map) AS T(PersonId_name, PersonId_value);
+    @people_name_property =
+        SELECT Name_name.Split('.') [0]AS Name_name,
+               Name_value
+        FROM @people_json
+             CROSS APPLY
+                 EXPLODE(people_name_map) AS T(Name_name, Name_value);
+
+    /*
+    Explode the ImageId, Tag maps to get the values as individual rowsets
+    */
+    @tags_imageid_property =
+        SELECT ImageId_name.Split('.') [0]AS ImageId_name,
+               ImageId_value
+        FROM @tags_json
+             CROSS APPLY
+                 EXPLODE(tags_imageid_map) AS T(ImageId_name, ImageId_value);
+    @tags_tag_property =
+        SELECT Tag_name.Split('.') [0]AS Tag_name,
+               Tag_value
+        FROM @tags_json
+             CROSS APPLY
+                 EXPLODE(tags_tag_map) AS T(Tag_name, Tag_value);
+
+    /*
+    JOIN the Id and Value maps to return the properties as a rowset
+    */
+    @people_out =
+        SELECT [ImageId].ImageId_value AS ImageId,
+               [PersonId].PersonId_value AS PersonId,
+               [Name].Name_value AS Name
+        FROM @people_imageid_property AS [ImageId]
+             INNER JOIN
+                 @people_personid_property AS [PersonId]
+             ON ImageId.ImageId_name == PersonId.PersonId_name
+             INNER JOIN
+                 @people_name_property AS [Name]
+             ON PersonId.PersonId_name == Name.Name_name;
+
+    @tags_out =
+        SELECT [ImageId].ImageId_value AS ImageId,
+               [Tag].Tag_value AS Tag
+        FROM @tags_imageid_property AS [ImageId]
+             INNER JOIN
+                 @tags_tag_property AS [Tag]
+             ON ImageId.ImageId_name == Tag.Tag_name;
+
+    /* 
+    Output to files
+    */
+
+        /*OUTPUT @image
+    TO "/output/image.csv"
+    USING Outputters.Csv(quoting : false);
+
+    OUTPUT @people_out
+    TO "/output/people.csv"
+    USING Outputters.Csv(quoting : false);
+
+    OUTPUT @tags_out
+    TO "/output/tags.csv"
+    USING Outputters.Csv(quoting : false);*/
+
+    /*
+    Insert image data into our ADLA tables
+    */
+    INSERT INTO Image
+    (
+        Id,
+        ImageName,
+        Description
+    )
+    SELECT Id,
+           ImageName,
+           Description
+    FROM @image;
+
+    INSERT INTO ImagePerson
+    (
+        ImageId,
+        PersonId,
+        Name
+    )
+    SELECT Guid.Parse(ImageId) AS ImageId,
+           Guid.Parse(PersonId) AS PersonId,
+           Name
+    FROM @people_out;
+
+    INSERT INTO ImageTag
+    (
+        ImageId,
+        Tag
+    )
+    SELECT Guid.Parse(ImageId) AS ImageId,
+           Tag
+    FROM @tags_out;
+
+END;

@@ -1,0 +1,48 @@
+﻿@model PhotoAlbum.Web.Models.INavViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Intelligent Photo Album</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/paper/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand navbar-link" href="@Url.Action("Index", "Home")"><i class="glyphicon glyphicon-eye-open"></i><span class="text-title">Intelligent Photo Album</span></a>
+                    <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                </div>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        @{ ViewHelper.PopulateNavData(Model, ViewContext); }
+                        <li class="@(Model.CurrentController == "Home" && Model.CurrentPage != "home-about" ? "active" : "")" role="presentation">@Html.ActionLink("album", "Index", "Home")</li>
+                        <li class="@(Model.CurrentController == "Bot" ? "active" : "")" role="presentation">@Html.ActionLink("bot", "Index", "Bot")</li>
+                        <li class="@(Model.CurrentPage == "home-about" ? "active" : "")" role="presentation">@Html.ActionLink("about", "About", "Home")</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <hr />
+    <footer>
+        <p>&copy; @DateTime.Now.Year - Intelligent Photo Album</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

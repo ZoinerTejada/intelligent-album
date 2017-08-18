@@ -1,0 +1,9 @@
+﻿USE DATABASE PhotoAlbum;
+
+// Execute stored procedure with default value
+//ProcessImageData(null);
+
+// Delete data from ADLA tables
+//TRUNCATE TABLE Image;
+//TRUNCATE TABLE ImagePerson;
+//TRUNCATE TABLE ImageTag;

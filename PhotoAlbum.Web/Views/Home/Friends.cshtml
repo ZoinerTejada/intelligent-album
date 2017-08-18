@@ -1,0 +1,53 @@
+﻿@model PhotoAlbum.Web.Models.AlbumViewModel
+@{
+    ViewBag.Title = "Friends";
+}
+
+@Html.Partial("_ImageNav", Model)
+
+<div class="container post">
+    <div class="row">
+        <div class="col-md-6 post-title">
+            <h1>Identified Friends</h1>
+            <p class="author"><strong>O'Reilly training</strong><span class="text-muted">Microsoft Cognitive Services</span></p>
+        </div>
+        <div class="col-md-6 col-md-offset-0 post-body">
+            <p>The friend tags below represent friends that were identified in the uploaded photos, based upon facial recognition training that you performed.</p>
+            <p>Click on a friend's name to display associated photos.</p>
+            <figure></figure>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.SelectedName))
+{
+    <div class="col-md-4 col-md-offset-8 alert alert-info">
+        <p>Selected friend: <strong>@Model.SelectedName</strong></p>
+    </div>
+}
+
+<div class="container">
+    <div class="row">
+        @foreach (var friend in Model.Names)
+        {
+            <span class="label label-primary">
+                <a href="@Url.Action("Friends", "Home", new { friend })">@friend</a>
+            </span>
+            <text>&nbsp;</text>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.SelectedName))
+{
+    @Html.Partial("_Images", Model)
+}
+else
+{
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="alert alert-info">
+            <strong>No friend selected!</strong> Click on a friend's name from the list above to begin.
+        </div>
+    </div>
+}

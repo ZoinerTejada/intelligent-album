@@ -1,0 +1,43 @@
+﻿@model PhotoAlbum.Web.Models.AlbumViewModel
+@{
+    var hasImages = Model.Images != null && Model.Images.Count > 0;
+    var topNumberOfImages = "";
+    if (Model.MaxNumberImages.HasValue && hasImages && Model.Images.Count >= Model.MaxNumberImages.Value)
+    {
+        topNumberOfImages = $"displaying latest <strong>{Model.MaxNumberImages.Value}</strong> added";
+    }
+    else
+    {
+        if (hasImages)
+        {
+            topNumberOfImages = $"{Model.Images.Count}";
+        }
+    }
+}
+
+<div class="container post">
+    <div class="page-header">
+        <h2>
+            Photos @if (hasImages)
+            {<small>(@Html.Raw(topNumberOfImages))</small>}</h2>
+    </div>
+    <div class="row">
+        @if (hasImages)
+        {
+            <div class="row flex-box flex-wrap-wrap">
+                @foreach (var image in Model.Images)
+                {
+                    <div class="col-sm-4 flex-box flex-justify-center flex-align-center">
+                        <a href="~/cloud/uploads/@image.ImageName" class="fancybox" rel="gallery1" title="@image.Description"><img class="img-responsive" src="~/cloud/uploads/@image.ImageName?width=200" text="@image.ImageName"/></a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <strong>No images found!</strong> There are no images, based on the current filter.
+            </div>
+        }
+    </div>
+</div>

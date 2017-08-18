@@ -1,0 +1,90 @@
+{
+    "name": "CopyPipeline",
+    "properties": {
+        "activities": [
+            {
+                "type": "Copy",
+              "typeProperties": {
+                "source": {
+                  "type": "AzureDataLakeStoreSource",
+                  "recursive": false
+                },
+                "sink": {
+                  "type": "SqlSink",
+                  "sqlWriterStoredProcedureName": "InsertJSONData",
+                  "sqlWriterTableType": "ImageType",
+                  "writeBatchSize": 10000,
+                  "writeBatchTimeout": "00:10:00"
+                },
+                "translator": {
+                  "type": "TabularTranslator",
+                  "columnMappings": "Id:id,ImageName:imageName,Description:description,People:people,Tags:tags"
+                },
+                "parallelCopies": 8,
+                "cloudDataMovementUnits": 8
+              },
+                "inputs": [
+                    {
+                        "name": "InputDataset"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "OutputDataset"
+                    }
+                ],
+                "policy": {
+                    "timeout": "1.00:00:00",
+                    "concurrency": 10,
+                    "executionPriorityOrder": "NewestFirst",
+                    "style": "StartOfInterval",
+                    "retry": 2,
+                    "longRetry": 0,
+                    "longRetryInterval": "00:00:00"
+                },
+                "scheduler": {
+                    "frequency": "Minute",
+                    "interval": 15
+                },
+                "name": "PhotoData_SQL_Ingest"
+            },
+            {
+                "type": "DataLakeAnalyticsU-SQL",
+                "typeProperties": {
+                    "script": "[PhotoAlbum].[dbo].[ProcessImageData](@in);",
+                    "degreeOfParallelism": 8,
+                    "priority": 100,
+                    "parameters": {
+                        "in": "$$Text.Format('PhotoData/{0:yyyy/MM/dd/HH/mm/}', Time.AddMinutes(SliceStart, 0))"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "InputDataset"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "OutputDataLakeTable"
+                    }
+                ],
+                "policy": {
+                    "timeout": "06:00:00",
+                    "concurrency": 1,
+                    "executionPriorityOrder": "NewestFirst",
+                    "retry": 1
+                },
+                "scheduler": {
+                    "frequency": "Minute",
+                    "interval": 15
+                },
+                "name": "PhotoData_ADLA_Ingest",
+                "linkedServiceName": "AzureDataLakeAnalyticsLinkedService"
+            }
+        ],
+        "start": "2017-05-11T21:00:00Z",
+        "end": "2018-06-01T05:00:00Z",
+        "isPaused": false,
+        "pipelineMode": "Scheduled"
+    }
+}

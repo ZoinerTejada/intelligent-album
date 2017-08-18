@@ -1,0 +1,27 @@
+﻿@model PhotoAlbum.Web.Models.AlbumViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<style>
+    /* override just for this page */
+    div.container.post { margin-bottom: 0px; }
+</style>
+
+@Html.Partial("_ImageNav", Model)
+
+<div class="container post">
+    <div class="row">
+        <div class="col-md-6 post-title">
+            <h1>Intelligent Photo Album</h1>
+            <p class="author"><strong>O'Reilly training</strong><span class="text-muted">Microsoft Cognitive Services</span></p>
+        </div>
+        <div class="col-md-6 col-md-offset-0 post-body">
+            <p>This photo album was built using Microsoft Cognitive Services to identify and tag friends and objects within the photos, and to automatically create a description for each photo, based on computer vision and machine learning algorithms.</p>
+            <p>Use the links above to filter photos by object tags or friends.</p>
+            <figure></figure>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_Images", Model)

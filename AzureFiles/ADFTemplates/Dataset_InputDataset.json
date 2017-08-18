@@ -1,0 +1,91 @@
+{
+    "name": "InputDataset",
+    "properties": {
+        "structure": [
+            {
+                "name": "Id",
+                "type": "String"
+            },
+            {
+                "name": "ImageName",
+                "type": "String"
+            },
+          {
+            "name": "Description",
+            "type": "String"
+          },
+            {
+                "name": "People",
+                "type": "String"
+            },
+            {
+                "name": "Tags",
+                "type": "String"
+            }
+        ],
+        "published": false,
+        "type": "AzureDataLakeStore",
+        "linkedServiceName": "Source-DataLakeStore",
+        "typeProperties": {
+            "folderPath": "PhotoData/{Year}/{Month}/{Day}/{Hour}/{Minute}",
+            "format": {
+                "type": "JsonFormat",
+                "jsonPathDefinition": {
+                    "id": "$.['Id']",
+                    "imageName": "$.['ImageName']",
+                    "description": "$.['Description']",
+                    "people": "$.['People']",
+                    "tags": "$.['Tags']"
+                }
+            },
+            "partitionedBy": [
+                {
+                    "name": "Year",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "yyyy"
+                    }
+                },
+                {
+                    "name": "Month",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "MM"
+                    }
+                },
+                {
+                    "name": "Day",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "dd"
+                    }
+                },
+                {
+                    "name": "Hour",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "HH"
+                    }
+                },
+                {
+                    "name": "Minute",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "mm"
+                    }
+                }
+            ]
+        },
+        "availability": {
+            "frequency": "Minute",
+            "interval": 15
+        },
+        "external": true,
+        "policy": {}
+    }
+}

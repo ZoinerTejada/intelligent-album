@@ -1,0 +1,15 @@
+{
+    "name": "OutputDataLakeTable",
+    "properties": {
+        "published": false,
+        "type": "AzureDataLakeStore",
+        "linkedServiceName": "Source-DataLakeStore",
+        "typeProperties": {
+            "folderPath": "scripts/"
+        },
+      "availability": {
+        "frequency": "Minute",
+        "interval": 15
+      }
+    }
+}
